@@ -14,6 +14,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 const useStyles = makeStyles({
     list: {
         width: "67vmin",
+        maxWidth: "300px"
     },
     btn: {
         zIndex: 2
@@ -49,10 +50,12 @@ export default function TemporaryDrawer({ fes }) {
                             id: fes.id,
                             name: fes.name,
                             x: fes.x,
-                            y: fes.y
+                            y: fes.y,
+                            cluster: fes.cluster,
+                            man: fes.man
                         })}`}>
                                 <ListItemIcon>
-                                    <img src={`img/${fes.id}.jpg`}></img>
+                                    <img src={`/img/${fes.id}.jpg`}></img>
                                 </ListItemIcon>
                                 <ListItemText primary={fes.name} />
                         </Link>
@@ -62,7 +65,9 @@ export default function TemporaryDrawer({ fes }) {
             <style jsx>{`
                 img {
                     width: 50vmin;
+                    max-width: 256px;
                     height: 50vmin;
+                    max-height: 256px;
                 }
                 a {
                     text-decoration: none;

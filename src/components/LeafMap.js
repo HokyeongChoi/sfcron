@@ -1,13 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import L from 'leaflet';
+import mun from '../seoul_municipalities_geo_simple.json';
 
-let map, marker, layer;
+let map, markerLayer, marker, layer;
+
+function isInside(marker, poly) {
+    // console.log(poly[0])
+    const polyPoints = poly[0];    
+    const x = marker.y, y = marker.x;
+
+    let inside = false;
+    for (let i = 0, j = polyPoints.length - 1; i < polyPoints.length; j = i++) {
+        let xi = polyPoints[i][1], yi = polyPoints[i][0];
+        let xj = polyPoints[j][1], yj = polyPoints[j][0];
+
+        let intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+};
 
 const LeafMap = ({ fes, res, full, invalidate, preventSwipe }) => {
     const [init, setInit] = useState(true);
 
     const Icon = L.icon({
-        iconUrl: 'icon.png',
+        iconUrl: '/icon.png',
         iconSize: [20, 30]
     });
 
@@ -31,29 +49,86 @@ const LeafMap = ({ fes, res, full, invalidate, preventSwipe }) => {
         style = <style jsx>{`
                             #map {
                                 width: 90vw;
-                                height: 40vmax;
-                                position: relative;
-                                margin-left: 2.5vmin;
+                                height: 40vh;
+                                min-height: 256px;
+                                margin: auto;
                             }
-                            // .mapContainer {
-                            //     position: fixed;
-                            //     top: 22vmin;
-                            //     left: 103.5vw;
-                            //     overflow: hidden
-                            // }
+                            .mapContainer {
+                                position: sticky;
+                                top: 10px;
+                            }
                         `}</style>;
+    }
+
+    const colorScheme = ['#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c','#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928'];
+    // const colorScheme = ['#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3','#fdb462','#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5','#ffed6f'];
+
+    const layers = [];
+
+    const municipalHandler = (feature, layer) => {
+        const colorCode = colorScheme[[22,15].includes(feature.properties.ESRI_PK)? 1 : feature.properties.ESRI_PK % colorScheme.length];
+        // console.log(layer.getBounds())
+        const festLayer = L.layerGroup();
+        for (let f of fes) {
+            if (isInside(f, feature.geometry.coordinates)) {
+                L.marker(
+                    [f.y, f.x],
+                ).bindPopup(
+                    `${f.name}<br><img src='/img/${f.id}.jpg'></img>`
+                ).addTo(festLayer);
+            }
+        }
+        layers.push([layer, festLayer]);
+
+        const zoomOutHandler = () => {
+            map.fitBounds([
+                [37.413294, 126.734086], 
+                [37.715133, 127.269311]
+            ]);
+            map.removeLayer(layer);
+            map.removeLayer(festLayer);
+            for (let l of layers) {
+                map.addLayer(l[0]);
+            }
+
+            map.removeEventListener("click", zoomOutHandler);
+            layer.addEventListener("click", zoomInHandler);
+        };
+
+        const zoomInHandler = () => {
+            map.fitBounds(layer.getBounds());
+            for (let l of layers) {
+                map.removeLayer(l[0]);
+                map.removeLayer(l[1]);
+            }
+            map.addLayer(layer);
+            map.addLayer(festLayer);
+
+            layer.removeEventListener("click", zoomInHandler);
+            map.addEventListener("click", zoomOutHandler);
+        }
+        
+
+        layer.addEventListener("click", zoomInHandler);
+        
+        layer.setStyle({
+            color: colorCode,
+            fillColor: colorCode,
+            fillOpacity: 0.5
+        });
     }
 
     useEffect(() => {
         if (full) {
-            map = L.map('map').setView([37.564214, 127.001699], 12);
-            for (let f of fes) {
-                L.marker(
-                    [f.y, f.x],
-                ).bindPopup(
-                    `${f.name}<br><img src='img/${f.id}.jpg'></img>`
-                ).addTo(map);
-            }
+            map = L.map('map').fitBounds([
+                [37.413294, 126.734086], 
+                [37.715133, 127.269311]
+            ]);
+            L.geoJSON(mun, {
+                onEachFeature: municipalHandler
+            }).addTo(map);
+            // markerLayer = L.layerGroup();
+            
             L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);

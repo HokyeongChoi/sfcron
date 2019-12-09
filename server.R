@@ -5,12 +5,12 @@ library(tidyverse)
 
 
 fetch.res = function(fes.id) {
-    con <- dbConnect(RSQLite::SQLite(), "2019.db")
+    con <- dbConnect(RSQLite::SQLite(), "SEOUL_FESTIVAL.db")
     qry <- sqlInterpolate(con, "SELECT *
                                 FROM (SELECT *
-                                        FROM festival_restaurants
+                                        FROM festival_restaurant
                                         WHERE festival_id = ?id ) AS fr
-                                JOIN restaurants AS r
+                                JOIN restaurant_info AS r
                                 ON fr.restaurants_id = r.id
                                 ORDER BY distance;",
                           id=fes.id)
