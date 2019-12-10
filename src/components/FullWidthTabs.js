@@ -88,13 +88,17 @@ const useStyles = makeStyles(theme => ({
         gridAutoColumns: '100%',
     },
     main: {
-
+        margin: '10px auto'
     },
     bar: {
-        position: 'relative'
+        position: 'relative',
+        width: '90vmin',
+        margin: '10px auto'
     },
     pie: {
-        position: 'relative'
+        position: 'relative',
+        width: '90vmin',
+        margin: '10px auto'
     },
 }));
 
@@ -150,6 +154,7 @@ export default function FullWidthTabs({ fe, res, fes }) {
                         <div className={classes.main}>
                             <img className="info-img" src={`/img/${fe.id}.jpg`}></img>
                             <p className="info-name">{fe.name}</p>
+                            <p className="info-name">{fe.exp}</p>
                         </div>
                         <div className={classes.bar}>
                             <BarChart data={clt[fe.cluster.toString()]} />
@@ -160,47 +165,39 @@ export default function FullWidthTabs({ fe, res, fes }) {
                     </div>
                 </TabPanel>
                 <TabPanel value={value} index={1} dir={theme.direction}>
-                    <LeafMap fes={fe} res={res} key={value === 1} invalidate={value === 1} preventSwipe={(b)=>setDisabled(b)}></LeafMap>
-                    <div className={classes.scroll}>
-                        <ul className={classes.ul}>
-                            {res.map(res =>
-                                (<a href={res.place_url} key={res.id}>
-                                    <li className="info-li">
-                                        <Restaurant res={res}></Restaurant>
-                                    </li>
-                                </a>
-                                )
-                            )}
-                        </ul>
-                        <footer>
-                            <div>
-                                Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from
-                            <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
-                            </div>
-                        </footer>
+                    <div className={classes.gridContainer}>
+                        <LeafMap fes={fe} res={res} key={value === 1} invalidate={value === 1} preventSwipe={(b)=>setDisabled(b)}></LeafMap>
+                        <div className={classes.scroll}>
+                            <ul className={classes.ul}>
+                                {res.map(res =>
+                                    (<a href={res.place_url} key={res.id}>
+                                        <li className="info-li">
+                                            <Restaurant res={res}></Restaurant>
+                                        </li>
+                                    </a>
+                                    )
+                                )}
+                            </ul>
+                            <footer>
+                                <div>
+                                    Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from
+                                <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a>
+                                </div>
+                            </footer>
+                        </div>
                     </div>
                 </TabPanel>
             </SwipeableViews>
             <style jsx>{`
-                body {
-                    padding: 0;
-                    margin: 0;
-                }
-                html, body {
-                    height: 100vh;
-                    width: 100vw;
-                }
                 .info-img {
                     display: block;
-                    width: 90vw;
+                    width: 90vmin;
                     border: solid;
-                    margin: 2vw;
-                    position: relative;
+                    margin: 10px auto;
                 }
                 .info-name {
                     margin-left: 3vw;
                     margin-bottom: 5vw;
-                    position: relative;
                 }
                 .info-li {
                     list-style-type: none;

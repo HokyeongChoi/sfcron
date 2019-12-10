@@ -29,6 +29,16 @@ const FestivalDetail = ({ match }) => {
         &&
         <ThemeProvider theme={theme}>
             <FullWidthTabs fe={fe} res={res} fes={fes}></FullWidthTabs>
+            <style jsx>{`
+                body {
+                    padding: 0;
+                    margin: 0;
+                }
+                html, body {
+                    height: 100vh;
+                    width: 100vw;
+                }
+            `}</style>
         </ThemeProvider>
     )
 }

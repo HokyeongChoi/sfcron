@@ -2,10 +2,11 @@ library(shiny)
 library(DBI)
 library(RSQLite)
 library(tidyverse)
+library(pool)
 
+con <- dbPool(RSQLite::SQLite(), dbname="SEOUL_FESTIVAL.db")
 
 fetch.res = function(fes.id) {
-    con <- dbConnect(RSQLite::SQLite(), "SEOUL_FESTIVAL.db")
     qry <- sqlInterpolate(con, "SELECT *
                                 FROM (SELECT *
                                         FROM festival_restaurant
@@ -15,7 +16,7 @@ fetch.res = function(fes.id) {
                                 ORDER BY distance;",
                           id=fes.id)
     resjson = dbGetQuery(con, qry) %>% filter(x > 0) %>% jsonlite::toJSON(digits=NA)
-    dbDisconnect(con)
+    # dbDisconnect(con)
     return (resjson)
 }
 
