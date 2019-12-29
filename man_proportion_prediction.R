@@ -1,4 +1,5 @@
 #!/usr/bin/Rscript
+# https://github.com/HGmin1159/Seoul_Festival
 library(readr)
 library(tidyverse)
 library(caret)
