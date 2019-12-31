@@ -21,4 +21,4 @@
 # 
 # m h  dom mon dow   command
 
-00 12 * * * /home/ubuntu/cron/do-stuff.sh >> /home/ubuntu/cron/cronlog.log 2>&1
+00 12 * * * /home/ubuntu/cron/do-stuff.sh >> /home/ubuntu/cron/log/cronlog.log 2>&1
