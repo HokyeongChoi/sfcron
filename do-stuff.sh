@@ -9,7 +9,7 @@ git pull &&
 
 /home/ubuntu/cron/cluster.py >> /home/ubuntu/cron/log/cronlog.log 2>&1 &&
 
-/home/ubuntu/cron/man_proportion_prediction.R >> /home/ubuntu/cron/predlog.log &&
+/home/ubuntu/cron/man_proportion_prediction.R >> /home/ubuntu/cron/log/cronlog.log 2>&1 &&
 
 /home/ubuntu/cron/image_retriever.py >> /home/ubuntu/cron/log/cronlog.log 2>&1 &&
 
