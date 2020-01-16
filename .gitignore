@@ -1,7 +1,0 @@
-node_modules/
-rsconnect/
-package-lock.json
-.Rproj.user
-.RData
-.Rhistory
-sfshiny.Rproj
