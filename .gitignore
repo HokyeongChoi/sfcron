@@ -1,0 +1,9 @@
+backup/
+misc/
+venv/
+log/
+.vscode/
+
+*test*
+config.json
+*pid*.log
