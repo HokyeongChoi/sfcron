@@ -56,13 +56,12 @@ for f in lst:
     if len(f['date']) > 0:
         f['date'].sort(key=lambda d: d["year"] * 400 + d["month"] * 31 + d["day"])
     
-
-lst.sort(key=lambda d: d['date'][-1]['year']*400 + d['date'][-1]['month']*31 + d['date'][-1]['day'] if len(d['date']) > 0 else -1)
-
 with open(pathto) as f:
     j = json.load(f)
 
 lst = j + lst
+
+lst.sort(key=lambda d: d['date'][-1]['year']*400 + d['date'][-1]['month']*31 + d['date'][-1]['day'] if len(d['date']) > 0 else -1)
 
 with open(pathto, 'w', encoding="utf-8") as f:
     f.write(json.dumps(lst, ensure_ascii=False))
