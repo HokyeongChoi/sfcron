@@ -4,6 +4,6 @@ venv/
 log/
 .vscode/
 
-*test*
+*test
 config.json
 *pid*.log
