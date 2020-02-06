@@ -31,7 +31,7 @@ def filter_festival(df_festival, con):
     cur.execute('SELECT 축제명, 개최지역, 개최기간 FROM FESTIVAL_INFO')
     origin_festival_nm = [i for i in cur]
 
-    pos = ~df_festival[['축제명', '개최지역', '개최기간']].apply(tuple, axis=1).isin(origin_festival_nm)
+    pos = ~df_festival[['title', '개최지역', '개최기간']].apply(tuple, axis=1).isin(origin_festival_nm)
     return df_festival.loc[pos].reset_index(drop=True)
 
 if __name__ == "__main__":

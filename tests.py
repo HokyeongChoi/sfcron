@@ -19,7 +19,7 @@ class TestFilter(unittest.TestCase):
         cur.close()
 
         d = {
-            '축제명': ['축제1', '축제2'],
+            'title': ['축제1', '축제2'],
             '개최지역': ['지역1', '지역4'],
             '개최기간': ['기간1', '기간4'],
         }
@@ -31,7 +31,7 @@ class TestFilter(unittest.TestCase):
     def test_filter_festival(self):
         df_filtered = filter_festival(self.df_festival, self.con)
         expected = pd.DataFrame(data={
-            '축제명': ['축제2'],
+            'title': ['축제2'],
             '개최지역': ['지역4'],
             '개최기간': ['기간4'],
         })
