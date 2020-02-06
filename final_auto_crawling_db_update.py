@@ -6,7 +6,9 @@
 import json
 import re
 import sqlite3
+import sys
 from datetime import datetime, timedelta
+from contextlib import closing
 
 import numpy as np
 import pandas as pd
@@ -14,18 +16,20 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
+
 def filter_festival(df_festival, con):
-    """
+    """Queries db and filters dataframe
+
     Arguments:
         df_festival {pandas.DataFrame}
         con {sqlite3.Connection}
+
     Returns:
         pandas.DataFrame
     """
     cur = con.cursor()
     cur.execute('SELECT 축제명, 개최지역, 개최기간 FROM FESTIVAL_INFO')
     origin_festival_nm = [i for i in cur]
-    cur.close()
 
     pos = ~df_festival[['축제명', '개최지역', '개최기간']].apply(tuple, axis=1).isin(origin_festival_nm)
     return df_festival.loc[pos].reset_index(drop=True)
@@ -108,6 +112,15 @@ if __name__ == "__main__":
 
     # %%
     festival_new = pd.DataFrame(res)
+    
+    # 기존 DB에 없는 축제만 추출
+    print(festival_new)
+    with closing(sqlite3.connect('SEOUL_FESTIVAL.db')) as con:
+        festival_new = filter_festival(festival_new, con)
+
+    if festival_new.empty:
+        sys.exit('Found nothing')
+    print(festival_new)
 
     # %% [markdown]
     # ## 축제장소 수정
@@ -266,13 +279,8 @@ if __name__ == "__main__":
 
 
     # %%
-    # 기존 DB에 없는 축제만 추출
-    print(festival_new)
-    festival_new_2 = filter_festival(festival_new, con)
-    print(festival_new_2)
-
-    new_festival_id = pd.DataFrame({'festival_id':np.arange(origin_festival_id[-1]+1, origin_festival_id[-1]+1+festival_new_2.shape[0])})
-    new_values = pd.concat([new_festival_id, festival_new_2], 1)
+    new_festival_id = pd.DataFrame({'festival_id':np.arange(origin_festival_id[-1]+1, origin_festival_id[-1]+1+festival_new.shape[0])})
+    new_values = pd.concat([new_festival_id, festival_new], 1)
     add_new_table = pd.concat([add_table, new_values], sort = False).iloc[1:]
 
     add_new_table['festival_id'] = add_new_table['festival_id'].astype(int)
