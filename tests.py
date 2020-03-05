@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
-from final_auto_crawling_db_update import filter_festival
+from final_auto_crawling_db_update import filter_festival, is_similar
 
 class TestFilter(unittest.TestCase):
 
@@ -36,6 +36,24 @@ class TestFilter(unittest.TestCase):
             '개최기간': ['기간4'],
         })
         assert_frame_equal(df_filtered, expected)
+
+class TestSequenceMatcher(unittest.TestCase):
+
+    def setUp(self):
+        con = sqlite3.connect("SEOUL_FESTIVAL.db")
+        cur = con.cursor()
+
+        cur.execute('SELECT 축제장소 FROM festival_info;')
+        self.locs = tuple(row[0] for row in cur)
+
+        con.close()
+
+    def test_214_266(self):
+        cnt = 0
+        for loc in self.locs:
+            cnt += 1
+            if is_similar(loc, '석촌호수 수변무대(동, 서호), 서울놀이마당'):
+                self.assertIn(cnt, (214, 266))
 
 if __name__ == '__main__':
     unittest.main()

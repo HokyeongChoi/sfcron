@@ -7,8 +7,9 @@ import json
 import re
 import sqlite3
 import sys
-from datetime import datetime, timedelta
 from contextlib import closing
+from datetime import datetime, timedelta
+from difflib import SequenceMatcher
 
 import numpy as np
 import pandas as pd
@@ -33,6 +34,22 @@ def filter_festival(df_festival, con):
 
     pos = ~df_festival[['title', '개최지역', '개최기간']].apply(tuple, axis=1).isin(origin_festival_nm)
     return df_festival.loc[pos].reset_index(drop=True)
+
+def is_similar(str1, str2):
+    """Returns True if a measure of similarity is greater than 0.9 otherwise False.
+    
+    (SequenceMatcher(None, str1, str2).ratio() > 0.9)
+    
+    Arguments:
+        str1 {str | NoneType} -- if NoneType, function returns False
+        str2 {str}
+    
+    Returns:
+        bool
+    """
+    if str1 == None:
+        return False
+    return SequenceMatcher(None, str1, str2).ratio() > 0.9
 
 if __name__ == "__main__":
     # %% [markdown]
@@ -185,6 +202,7 @@ if __name__ == "__main__":
     festival_new['축제장소_수정'] = np.where(festival_new['축제장소'].str.contains('최순우옛집'), '최순우옛집', festival_new['축제장소_수정'])
     festival_new['축제장소_수정'] = np.where(festival_new['축제장소'].str.contains('올림픽공원'), '올림픽공원', festival_new['축제장소_수정'])
     festival_new['축제장소_수정'] = np.where(festival_new['축제장소'].str.contains('국립한글박물관'), '국립한글박물관', festival_new['축제장소_수정'])
+    festival_new['축제장소_수정'] = np.where(festival_new['축제장소'].apply(is_similar, args=('석촌호수 수변무대(동, 서호), 서울놀이마당',)), '석촌호수 수변무대', festival_new['축제장소_수정'])
 
 
     # %%
