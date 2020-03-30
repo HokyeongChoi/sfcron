@@ -48,12 +48,14 @@ class TestSequenceMatcher(unittest.TestCase):
 
         con.close()
 
-    def test_214_266(self):
+    def test_214_266_207_271(self):
         cnt = 0
         for loc in self.locs:
             cnt += 1
             if is_similar(loc, '석촌호수 수변무대(동, 서호), 서울놀이마당'):
                 self.assertIn(cnt, (214, 266))
+            if is_similar(loc, '서울 종로구 아르코예술극장 소극장 등'):
+                self.assertIn(cnt, (207, 271))
 
 if __name__ == '__main__':
     unittest.main()

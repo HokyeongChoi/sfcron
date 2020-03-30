@@ -203,6 +203,7 @@ if __name__ == "__main__":
     festival_new['축제장소_수정'] = np.where(festival_new['축제장소'].str.contains('올림픽공원'), '올림픽공원', festival_new['축제장소_수정'])
     festival_new['축제장소_수정'] = np.where(festival_new['축제장소'].str.contains('국립한글박물관'), '국립한글박물관', festival_new['축제장소_수정'])
     festival_new['축제장소_수정'] = np.where(festival_new['축제장소'].apply(is_similar, args=('석촌호수 수변무대(동, 서호), 서울놀이마당',)), '석촌호수 수변무대', festival_new['축제장소_수정'])
+    festival_new['축제장소_수정'] = np.where(festival_new['축제장소'].apply(is_similar, args=('서울 종로구 아르코예술극장 소극장 등',)), '서울 종로구 아르코예술극장 소극장', festival_new['축제장소_수정'])
 
 
     # %%
