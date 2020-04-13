@@ -7,7 +7,7 @@ with open("last_id.txt") as f:
 pathfrom = "SEOUL_FESTIVAL.db"
 pathto = "../web/2019.json"
 
-FKEYS = ('id', 'name', 'x', 'y', 'period', 'explanation', 'cluster', 'region', 'place', 'link')
+FKEYS = ('id', 'name', 'x', 'y', 'period', 'detail', 'cluster', 'region', 'place', 'link')
 
 def fetch_fes():
     conn = sqlite3.connect(pathfrom)
